@@ -83,4 +83,20 @@ int** readMatrix(const char* file, int rows, int cols) {
 	return matrix;
 }
 
+void arrOutput(int** matix, int rows, int cols) {
+	for (int i = 0; i < rows;i++) {
+		cout << '\n' << '\n';
+		for (int j = 0; j < cols; j++) {
+			cout << (char)matix[i][j] << '\t';
+		}
+	}
+}
+
+void freeMatrix(int** matrix, int rows) {
+	for (int i = 0; i < rows; i++) {
+		delete[] matrix[i];
+	}
+
+	delete[] matrix;
+}
 
