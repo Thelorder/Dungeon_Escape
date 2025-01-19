@@ -262,3 +262,25 @@ void freeMatrix(int** matrix, int rows) {
 	delete[] matrix;
 }
 
+void savePlayerDataToFile( Player& player,int Stage, int Level) {
+	char fileName[maxNameSize + 10];
+	copyArray(fileName, player.name);
+	addingUnderscore(fileName);
+	txtAddOn(fileName);
+
+	player.currentLevel = Level;
+	player.currentStage = Stage;
+
+	ofstream playerData(fileName);
+	if (playerData.is_open()) {
+		playerData << player.name << ":"
+			<< player.coins << ":"
+			<< player.lifes << ":"
+			<< player.currentStage<<":"
+			<< player.currentLevel <<'\n';
+		playerData.close();
+	}
+	else {
+		cout << "Error saving player data!\n";
+	}
+}
