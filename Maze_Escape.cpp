@@ -337,3 +337,54 @@ bool loadSavedLevel(const char* playerName, int& currentStage, int& currentLevel
 	return true;
 
 }
+
+void newPlayerRegister(Player player) {
+	cout << "Player Registration" << endl;
+	
+
+	cout << "Enter player name: ";
+	std::cin.ignore();
+	std::cin.getline(player.name, maxNameSize);
+
+	player.coins = startingCoins;
+	player.lifes = startingLives;
+	player.currentStage = 0;
+	player.currentLevel = 0;
+
+	char playerInfo[maxNameSize + 20];
+	copyArray(playerInfo, player.name);
+	addingUnderscore(playerInfo);
+	txtAddOn(playerInfo);
+
+	if (fileExists(playerInfo)) {
+		cout << "The Player name " << player.name << " already exists! " << endl;
+		return;
+	}
+
+	savePlayerDataToFile(player,player.currentStage,player.currentLevel);
+	cout << "Welcome to the Dungeons!!!"<<endl;
+}
+
+bool logInCredentials(Player& player) {
+
+	char name[maxNameSize + 4];
+	cout << "Enter player's name to log in: ";
+	std::cin.ignore();
+	std::cin.getline(name, maxNameSize);
+
+	for (int i = 0; name[i] != '\0'; ++i) {
+		player.name[i] = name[i];
+	}
+
+	txtAddOn(name);
+	addingUnderscore(name);
+
+	if (readingPlayerDataFromFile(name, player)) {
+		cout << "Welcome back, " << player.name << "!\n";
+		return true;
+	}
+	else {
+		cout << "Player not found. Please register first.\n";
+		return false;
+	}
+}
