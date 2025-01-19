@@ -12,6 +12,6 @@ they will be put in a maze where they willbe surounded by walls(#) which damage 
 portals(%) which teleport the player to a postion next to them, in some levels and enemy(E) which moves in a mirriored mannoer to the player,
 and a chest(X), which whne interacted with a found key will compleate the level nad move the player to the next stage.
 The player also has the ability to quit the game at any time by pressing Q, which will save his progress.
-When all the stages are cleared, the player has quit or he has ran out of lives a game over message will appear and the player will be sent back to the starting screen where they can decid
+When all the stages are cleared, the player has quit or he has ran out of lives a game over message will appear and the player will be sent back to the starting screen where they can decide
 to log back and attempt to escape the dungeon.
 
