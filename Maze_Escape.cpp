@@ -598,3 +598,35 @@ bool findIfKeyHasBeenTaken(int** matrix, int rows, int cols) {
 	}
 	return true;
 }
+
+void loadLevelChoice(int& currentStage, int& currentLevel, Player& player, bool& saveLevelLoader) {
+	int choice;
+	cout << "Choose 1 if you want to load a previous level!\n";
+	cout << "Choose 2 if you want to load save file!\n";
+	cin >> choice;
+
+	if (choice == 2) {
+		currentStage = player.currentStage;
+		currentLevel = player.currentLevel;
+		saveLevelLoader = true;
+	}
+	else if (choice == 1) {
+		int temp = player.currentStage + 1;
+		cout << "Pick which previous level you want to play: \n";
+		while (temp) {
+			cout << "Stage: " << temp-- << endl;
+		}
+
+		int pick;
+		cin >> pick;
+
+		if (pick < 1 || pick > 3) {
+			cout << "Incorrect input! Starting from stage 0! \n";
+		}
+		else {
+			currentStage = pick - 1;
+			player.lifes = startingLives;
+			player.coins = 0;
+		}
+	}
+}
