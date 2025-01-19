@@ -427,3 +427,60 @@ bool teleportaionToNextPortal(int** level, int rows, int cols, int& targetX, int
 
 	return found; // Return whether a portal was found
 }
+
+bool collisionChech(int** level, int rows, int cols, int& targetX, int& targetY, Player& player) {
+
+	if (targetX < 0 || targetX >= rows || targetY < 0 || targetY >= cols || level[targetX][targetY] == wallCh) {
+		// Border collision or out-of-bounds
+		player.lifes -= 1;
+		return 0;
+	}
+	if (level[targetX][targetY] == coinCH){ // Pick up coin
+		player.coins += 1;
+		level[targetX][targetY] = ' ';
+	}
+	else if (level[targetX][targetY] == keyCh) { // Pick up key
+		key = true;
+		level[targetX][targetY] = ' ';
+	}
+	else if (level[targetX][targetY] == chestCH) { // Unlock Chest
+		if (key) {
+			winCondition = true;
+			level[targetX][targetY] = ' ';
+		}
+		else {
+			return 0; // Can't open without a key
+		}
+	}
+	else if (level[targetX][targetY] == portalCh) { // Portal teleport
+		teleportaionToNextPortal(level, rows, cols, targetX, targetY);
+		return 1; // Portal transport successful
+	}
+
+	return 1; // No collision
+}
+
+void movementInLevel(int** level,int rows,int cols, char move, int& characterX, int& characterY, Player& player) {
+	int offsetX = 0, offsetY = 0;
+
+	switch (move) {
+	case 'W': case 'w': offsetX = -1; break; // Move up
+	case 'S': case 's': offsetX = 1; break;  // Move down
+	case 'A': case 'a': offsetY = -1; break; // Move left
+	case 'D': case 'd': offsetY = 1; break;  // Move right
+	default:
+		cout << "Incorrect Input!!!";
+		return;
+	}
+
+	// Calculate the target position
+	int targetX = characterX + offsetX;
+	int targetY = characterY + offsetY;
+
+	if (collisionChech(level, rows, cols, targetX, targetY, player)) {
+		level[characterX][characterY] = ' '; // Clear previous position
+		level[targetX][targetY] = playerCh;       // Move player to new position
+		characterX = targetX;
+		characterY = targetY;
+	}
+}
