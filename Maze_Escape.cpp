@@ -1,5 +1,32 @@
 //these are the functionalities that allow the program to open a file, within which is contained the level map, count the rows and cols of said map.
 //Then the program proceedes to dynamicly produce a 2-D array which contains the map 
+#include <iostream>
+#include <Windows.h>
+#include <stdlib.h>
+#include <time.h>
+#include <fstream>
+#include <vector>
+#include <string>
+
+using namespace std;
+
+const int startingPositionX = 1;
+const int startingPositionY = 1;
+
+bool key = false;
+bool winCondition = false;
+
+const int maxNameSize = 51;
+const int startingCoins = 0;
+const int startingLives = 3;
+
+//Ch stands for character
+const char playerCh = '@';
+const char wallCh = '#';
+const char portalCh = '%';
+const char coinCH = 'C';
+const char keyCh = '&';
+const char chestCH = 'X';
 
 int countCols(ifstream& ifs) {
 	char ch;
