@@ -657,20 +657,27 @@ void loadLevelFile(const vector<vector<const char*>>& levels, int currentStage, 
 	}
 }
 
-void handleGameOver(Player& player, int** level, int rows, bool saveLevelLoader) {
+bool handleGameOver(Player& player, int** level, int rows, bool saveLevelLoader) {
 	if (player.lifes <= 0) {
 		cout << "Game Over!\n";
+
 		freeMatrix(level, rows);
 		player.lifes = 3;
 		savePlayerDataToFile(player, player.currentStage, player.currentLevel);
+		return true;
 	}
+	return false;
 }
 
-void handleEnemyEncounter(int characterX, int characterY, int enemyX, int enemyY, Player& player, int** level, int rows) {
+
+bool handleEnemyEncounter(int characterX, int characterY, int enemyX, int enemyY, Player& player, int** level, int rows) {
 	if (enemyY == characterY && enemyX == characterX) {
 		cout << "\nGame Over! The enemy Caught you!!!\n";
+
 		freeMatrix(level, rows);
 		player.lifes = 3;
 		savePlayerDataToFile(player, player.currentStage, player.currentLevel);
+		return true;
 	}
+	return false;
 }
