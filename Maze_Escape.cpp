@@ -656,3 +656,12 @@ void loadLevelFile(const vector<vector<const char*>>& levels, int currentStage, 
 		}
 	}
 }
+
+void handleGameOver(Player& player, int** level, int rows, bool saveLevelLoader) {
+	if (player.lifes <= 0) {
+		cout << "Game Over!\n";
+		freeMatrix(level, rows);
+		player.lifes = 3;
+		savePlayerDataToFile(player, player.currentStage, player.currentLevel);
+	}
+}
