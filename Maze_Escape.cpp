@@ -630,3 +630,29 @@ void loadLevelChoice(int& currentStage, int& currentLevel, Player& player, bool&
 		}
 	}
 }
+
+void loadLevelFile(const vector<vector<const char*>>& levels, int currentStage, int currentLevel, int**& level, int& rows, int& cols, bool saveLevelLoader, Player& player) {
+	const char* levelFile = levels[currentStage][currentLevel];
+
+	if (saveLevelLoader) {
+		char saveFile[maxNameSize * 2];
+		copyArray(saveFile, player.name);
+		addingUnderscore(saveFile);
+		leveltxtAddOn(saveFile);
+		calculateDimensions(saveFile, rows, cols);
+		level = readMatrix(saveFile, rows, cols);
+		if (!level) {
+			cout << "Failed to load the level: " << saveFile << endl;
+			return;
+		}
+		saveLevelLoader = false;
+	}
+	else if (level == nullptr) {
+		calculateDimensions(levelFile, rows, cols);
+		level = readMatrix(levelFile, rows, cols);
+		if (!level) {
+			cout << "Failed to load the level: " << levelFile << endl;
+			return;
+		}
+	}
+}
