@@ -587,3 +587,14 @@ void enemyMovementInLevel(int** level, int rows, int cols, char move, int& enemy
 		enemyY = targetY;
 	}
 }
+
+bool findIfKeyHasBeenTaken(int** matrix, int rows, int cols) {
+	for (int i = 0; i < rows; ++i) {
+		for (int j = 0; j < cols; ++j) {
+			if (matrix[i][j] == keyCh) {
+				return false;
+			}
+		}
+	}
+	return true;
+}
