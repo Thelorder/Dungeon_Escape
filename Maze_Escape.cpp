@@ -364,6 +364,7 @@ void newPlayerRegister(Player player) {
 
 	savePlayerDataToFile(player,player.currentStage,player.currentLevel);
 	cout << "Welcome to the Dungeons!!!"<<endl;
+	Sleep(1000);
 }
 
 bool logInCredentials(Player& player) {
@@ -382,10 +383,12 @@ bool logInCredentials(Player& player) {
 
 	if (readingPlayerDataFromFile(name, player)) {
 		cout << "Welcome back, " << player.name << "!\n";
+		Sleep(1000);
 		return true;
 	}
 	else {
 		cout << "Player not found. Please register first.\n";
+		Sleep(1000);
 		return false;
 	}
 }
@@ -622,6 +625,7 @@ void loadLevelChoice(int& currentStage, int& currentLevel, Player& player, bool&
 
 		if (pick < 1 || pick > 3) {
 			cout << "Incorrect input! Starting from stage 0! \n";
+			Sleep(1000);
 		}
 		else {
 			currentStage = pick - 1;
@@ -643,6 +647,7 @@ void loadLevelFile(const vector<vector<const char*>>& levels, int currentStage, 
 		level = readMatrix(saveFile, rows, cols);
 		if (!level) {
 			cout << "Failed to load the level: " << saveFile << endl;
+			Sleep(1000);
 			return;
 		}
 		saveLevelLoader = false;
@@ -652,6 +657,7 @@ void loadLevelFile(const vector<vector<const char*>>& levels, int currentStage, 
 		level = readMatrix(levelFile, rows, cols);
 		if (!level) {
 			cout << "Failed to load the level: " << levelFile << endl;
+			Sleep(1000);
 			return;
 		}
 	}
@@ -661,6 +667,7 @@ bool handleGameOver(Player& player, int** level, int rows, bool saveLevelLoader)
 	if (player.lifes <= 0) {
 		cout << "Game Over!\n";
 
+		Sleep(1000);
 		freeMatrix(level, rows);
 		player.lifes = 3;
 		savePlayerDataToFile(player, player.currentStage, player.currentLevel);
@@ -674,6 +681,7 @@ bool handleEnemyEncounter(int characterX, int characterY, int enemyX, int enemyY
 	if (enemyY == characterY && enemyX == characterX) {
 		cout << "\nGame Over! The enemy Caught you!!!\n";
 
+		Sleep(1000);
 		freeMatrix(level, rows);
 		player.lifes = 3;
 		savePlayerDataToFile(player, player.currentStage, player.currentLevel);
@@ -806,7 +814,8 @@ int main() {
 
         // After successful login or registration, prompt to log out or continue
         if (isLoggedIn) {
-            cout << endl <<"Return to Main Menu: ";
+            cout << endl <<"Returnind to Main Menu: ";
+		Sleep(1000);
 			clearConsole();
 			isLoggedIn = false;
         }
