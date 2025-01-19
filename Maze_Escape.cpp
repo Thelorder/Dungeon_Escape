@@ -395,3 +395,35 @@ void clearConsole() {
 		system("clear");
 	}
 }
+
+bool teleportaionToNextPortal(int** level, int rows, int cols, int& targetX, int& targetY) {
+	bool found = false;
+
+	// Search for the next portal after the current one
+	for (int i = targetX; i < rows && !found; ++i) {
+		for (int j = (i == targetX ? targetY + 1 : 0); j < cols; ++j) {
+			if (level[i][j] == portalCh) { // Found another portal
+				targetX = i;
+				targetY = j+1;
+				found = true;
+				break;
+			}
+		}
+	}
+
+	// If no portal was found, wrap around and search from the beginning
+	if (!found) {
+		for (int i = 0; i < rows && !found; ++i) {
+			for (int j = 0; j < cols; ++j) {
+				if (level[i][j] == '%') {
+					targetX = i;
+					targetY = j+1;
+					found = true;
+					break;
+				}
+			}
+		}
+	}
+
+	return found; // Return whether a portal was found
+}
