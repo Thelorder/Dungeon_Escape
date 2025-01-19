@@ -284,3 +284,31 @@ void savePlayerDataToFile( Player& player,int Stage, int Level) {
 		cout << "Error saving player data!\n";
 	}
 }
+
+void saveLevelState(const Player& player, int** level, int rows, int cols) {
+	char fileName[maxNameSize*2];
+	copyArray(fileName, player.name);
+	addingUnderscore(fileName);
+	leveltxtAddOn(fileName);
+
+
+	ofstream saveFile(fileName);
+	if (!saveFile.is_open()) {
+		cout << "Error: Could not create save file.\n";
+		return;
+	}
+
+	for (int i = 0; i < rows; i++) {
+		for (int j = 0; j < cols; j++) {
+			saveFile << level[i][j];
+			if (j < cols - 1) {
+				saveFile << " "; // Add space only between elements
+			}
+		}
+		if (i < rows - 1) {
+			saveFile << '\n'; // Add newline only between rows, not after the last row
+		}
+	}
+
+	saveFile.close();
+}
