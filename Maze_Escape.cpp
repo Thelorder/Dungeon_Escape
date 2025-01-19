@@ -388,3 +388,10 @@ bool logInCredentials(Player& player) {
 		return false;
 	}
 }
+
+void clearConsole() {
+	if (system("cls"))
+	{
+		system("clear");
+	}
+}
