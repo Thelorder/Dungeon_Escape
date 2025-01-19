@@ -665,3 +665,12 @@ void handleGameOver(Player& player, int** level, int rows, bool saveLevelLoader)
 		savePlayerDataToFile(player, player.currentStage, player.currentLevel);
 	}
 }
+
+void handleEnemyEncounter(int characterX, int characterY, int enemyX, int enemyY, Player& player, int** level, int rows) {
+	if (enemyY == characterY && enemyX == characterX) {
+		cout << "\nGame Over! The enemy Caught you!!!\n";
+		freeMatrix(level, rows);
+		player.lifes = 3;
+		savePlayerDataToFile(player, player.currentStage, player.currentLevel);
+	}
+}
