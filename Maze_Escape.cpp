@@ -312,3 +312,28 @@ void saveLevelState(const Player& player, int** level, int rows, int cols) {
 
 	saveFile.close();
 }
+
+bool loadSavedLevel(const char* playerName, int& currentStage, int& currentLevel, int**& level, int& rows, int& cols) {
+	char fileName[maxNameSize*2];
+	copyArray(fileName, playerName);
+	addingUnderscore(fileName);
+	leveltxtAddOn(fileName);
+
+	ifstream saveFile(fileName); 
+	if (!saveFile.is_open()) {
+		return false;
+	}
+
+	calculateDimensions(fileName, rows, cols);
+
+	if (rows == 0 || cols == 0) {
+		return false;
+	}
+
+	// Allocate and read the level matrix
+	level = readMatrix(fileName, rows, cols);
+	saveFile.close();
+
+	return true;
+
+}
