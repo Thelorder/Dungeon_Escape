@@ -769,3 +769,49 @@ void playLevel(Player& player) {
 	cout << "Congratulations, you've completed all stages!\n";
 
 }
+
+int main() {
+    Player player;
+    int choice;
+    bool isLoggedIn = false;
+    
+    do {
+        cout << "Press 1 to register as a new player.\n";
+        cout << "Press 2 to log in.\n";
+        cout << "Press 3 to exit.\n";  // Added option to exit
+        cout << "Enter choice: ";
+        cin >> choice;
+
+        switch (choice) {
+        case 1:
+            newPlayerRegister(player);
+            isLoggedIn = true;  // After registering, user is logged in
+            break;
+        case 2:
+            if (logInCredentials(player)) {
+                isLoggedIn = true;  
+                playLevel(player);
+            }
+            else {
+                cout << "Login failed! Please try again.\n";
+            }
+            break;
+        case 3:
+            cout << "Goodbye!\n";
+            return 0;  // Exit the program
+        default:
+            cout << "Invalid input!\n\n";
+            break;
+        }
+
+        // After successful login or registration, prompt to log out or continue
+        if (isLoggedIn) {
+            cout << endl <<"Return to Main Menu: ";
+			clearConsole();
+			isLoggedIn = false;
+        }
+
+    } while (!isLoggedIn);  // Loop will continue if not logged in
+    
+    return 0;
+}
