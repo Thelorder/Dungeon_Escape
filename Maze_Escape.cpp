@@ -27,6 +27,7 @@ const char portalCh = '%';
 const char coinCH = 'C';
 const char keyCh = '&';
 const char chestCH = 'X';
+const char enemyCh = 'E';
 
 struct Player {
 	char name[maxNameSize];
@@ -515,7 +516,7 @@ int enemyXCordinates(int** matrix, int rows, int cols) {
 
 	for (int i = 0; i < rows; ++i) {
 		for (int j = 0; j < cols; ++j) {
-			if (matrix[i][j] == 'E') {
+			if (matrix[i][j] == enemyCh) {
 				return i; // Return the row index of the player's position
 			}
 		}
@@ -528,11 +529,61 @@ int enemyYCordinates(int** matrix, int rows, int cols) {
 
 	for (int i = 0; i < rows; ++i) {
 		for (int j = 0; j < cols; ++j) {
-			if (matrix[i][j] == 'E') {
+			if (matrix[i][j] == enemyCh) {
 				return j; // Return the column index of the player's position
 			}
 		}
 	}
 	return -1;
 
+}
+
+bool enemyCollisionChech(int** level, int rows, int cols, int& targetX, int& targetY) {
+
+	if (targetX < 0 || targetX >= rows || targetY < 0 || targetY >= cols || level[targetX][targetY] == wallCh) {
+		
+		return 0;
+	}
+	if (level[targetX][targetY] == coinCH) { // Pick up coin
+		
+		level[targetX][targetY] = ' ';
+	}
+	else if (level[targetX][targetY] == keyCh) { 
+	
+		return 0;
+	}
+	else if (level[targetX][targetY] == chestCH) { 
+		return 0;
+	}
+	else if (level[targetX][targetY] == portalCh) { // Portal teleport
+		teleportaionToNextPortal(level, rows, cols, targetX, targetY);
+		return 1; // Portal transport successful
+	}
+
+	return 1; // No collision
+}
+
+void enemyMovementInLevel(int** level, int rows, int cols, char move, int& enemyX, int& enemyY) {
+	int offsetX = 0, offsetY = 0;
+
+	switch (move) {
+	case 'W': case 'w': offsetX = -1; break; // Move up
+	case 'S': case 's': offsetX = 1; break;  // Move down
+	case 'A': case 'a': offsetY = 1; break; // Move left
+	case 'D': case 'd': offsetY = -1; break;  // Move right
+	default:
+		cout << "Incorrect Input!!!";
+		return;
+	}
+
+	// Calculate the target position
+	int targetX = enemyX + offsetX;
+	int targetY = enemyY + offsetY;
+
+	if (enemyCollisionChech(level, rows, cols, targetX, targetY)) {
+		level[enemyX][enemyY] = ' '; // Clear previous position
+		level[targetX][targetY] = enemyCh;       // Move enemy to new position
+		enemyX = targetX;
+		enemyY = targetY;
+	}
 }
