@@ -36,6 +36,48 @@ struct Player {
 	int currentLevel = 0;
 };
 
+//Adds the .txt extension for the file;
+void txtAddOn(char* fileName) {
+	if (fileName == nullptr) {
+		return ;
+	}
+	int i = 0;
+
+	while (fileName[i] != '\0') {
+		i++;
+	}
+	// Add the ".txt" extension
+	fileName[i++] = '.';
+	fileName[i++] = 't';
+	fileName[i++] = 'x';
+	fileName[i++] = 't';
+	fileName[i] = '\0';
+}
+
+void leveltxtAddOn(char* fileName){
+	if (fileName == nullptr) {
+		return ;
+	}
+	int i = 0;
+
+	while (fileName[i] != '\0') {
+		i++;
+	}
+	// Add the ".txt" extension
+	fileName[i++] = '_';
+	fileName[i++] = 'L';
+	fileName[i++] = 'e';
+	fileName[i++] = 'v';
+	fileName[i++] = 'e';
+	fileName[i++] = 'l';
+	fileName[i++] = '.';
+	fileName[i++] = 't';
+	fileName[i++] = 'x';
+	fileName[i++] = 't';
+	fileName[i] = '\0';
+
+}
+
 int countCols(ifstream& ifs) {
 	char ch;
 
