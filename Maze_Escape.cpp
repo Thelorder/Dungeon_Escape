@@ -484,3 +484,29 @@ void movementInLevel(int** level,int rows,int cols, char move, int& characterX, 
 		characterY = targetY;
 	}
 }
+
+int characterXCordinates(int** matrix,int rows,int cols) {
+
+	for (int i = 0; i < rows; ++i) {
+		for (int j = 0; j < cols; ++j) {
+			if (matrix[i][j] == playerCh) {
+				return i; // Return the row index of the player's position
+			}
+		}
+	}
+	return -1;
+
+}
+
+int characterYCordinates(int** matrix, int rows, int cols) {
+
+	for (int i = 0; i < rows; ++i) {
+		for (int j = 0; j < cols; ++j) {
+			if (matrix[i][j] == playerCh) {
+				return j; // Return the column index of the player's position
+			}
+		}
+	}
+	return -1;
+
+}
