@@ -28,6 +28,14 @@ const char coinCH = 'C';
 const char keyCh = '&';
 const char chestCH = 'X';
 
+struct Player {
+	char name[maxNameSize];
+	int coins = startingCoins;
+	int lifes = startingLives;
+	int currentStage = 0;
+	int currentLevel = 0;
+};
+
 int countCols(ifstream& ifs) {
 	char ch;
 
