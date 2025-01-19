@@ -78,6 +78,91 @@ void leveltxtAddOn(char* fileName){
 
 }
 
+bool fileExists(const char* fileName) {
+	ifstream file(fileName);
+	return file.good();
+}
+
+bool readingPlayerDataFromFile(const char* fileName, Player& player) {
+	ifstream playerData(fileName);
+	char buffer[maxNameSize * 2];
+
+	if (playerData.is_open()) {
+		while (playerData.getline(buffer, sizeof(buffer))) {
+			int i = 0;
+			int j = 0;
+			while (buffer[i] != ':' && buffer[i] != '\0') {
+				player.name[j++] = buffer[i++];
+			}
+			player.name[j] = '\0'; // Null-terminate the name
+			i++; // Skip the comma
+
+			// Extract coins (up to the next comma)
+			int coins = 0;
+			while (buffer[i] != ':' && buffer[i] != '\0') {
+				coins = coins * 10 + (buffer[i] - '0'); // Convert char to int
+				i++;
+			}
+			player.coins = coins;
+			i++; // Skip the comma
+
+			// Extract lives
+			int lives = 0;
+			while (buffer[i] != ':' && buffer[i] != '\0') {
+				lives = lives * 10 + (buffer[i] - '0'); // Convert char to int
+				i++;
+			}
+			player.lifes = lives;
+			i++;
+
+			int currentStage = 0;
+			while (buffer[i] != ':' && buffer[i] != '\0') {
+				currentStage = currentStage * 10 + (buffer[i] - '0'); // Convert char to int
+				i++;
+			}
+			player.currentStage = currentStage;
+			i++;
+
+			int currentLevel = 0;
+			while (buffer[i] != ':' && buffer[i] != '\0') {
+				currentLevel = currentLevel * 10 + (buffer[i] - '0'); // Convert char to int
+				i++;
+			}
+			player.currentLevel = currentLevel;
+
+			if (strcmp(player.name, player.name) == 0) {
+				playerData.close();
+				return true; // Found the player and read their data
+			}
+
+		}
+		playerData.close();
+	}
+	else {
+		cout << "Error!!!";
+	}
+
+	return false;
+}
+
+//function to replace the spaces in the players name with _
+void addingUnderscore(char* fileName) {
+	for (int i = 0; fileName[i] != '\0'; ++i) {
+		if (fileName[i] == ' ') {
+			fileName[i] = '_';
+		}
+	}
+}
+
+void copyArray(char* destination, const char* source) {
+	int i = 0;
+	while (source[i] != '\0') {
+		destination[i] = source[i];
+		i++;
+	}
+	destination[i] = '\0'; // Null-terminate the string
+}
+
 int countCols(ifstream& ifs) {
 	char ch;
 
