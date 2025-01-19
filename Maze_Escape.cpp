@@ -510,3 +510,29 @@ int characterYCordinates(int** matrix, int rows, int cols) {
 	return -1;
 
 }
+
+int enemyXCordinates(int** matrix, int rows, int cols) {
+
+	for (int i = 0; i < rows; ++i) {
+		for (int j = 0; j < cols; ++j) {
+			if (matrix[i][j] == 'E') {
+				return i; // Return the row index of the player's position
+			}
+		}
+	}
+	return -1;
+
+}
+
+int enemyYCordinates(int** matrix, int rows, int cols) {
+
+	for (int i = 0; i < rows; ++i) {
+		for (int j = 0; j < cols; ++j) {
+			if (matrix[i][j] == 'E') {
+				return j; // Return the column index of the player's position
+			}
+		}
+	}
+	return -1;
+
+}
