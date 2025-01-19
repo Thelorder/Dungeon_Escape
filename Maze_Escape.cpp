@@ -681,3 +681,91 @@ bool handleEnemyEncounter(int characterX, int characterY, int enemyX, int enemyY
 	}
 	return false;
 }
+
+void playLevel(Player& player) {
+
+	vector<const char*> stage1 = { "level1-1.txt", "level1-2.txt" };
+	vector<const char*> stage2 = { "level2-1.txt", "level2-2.txt" };
+	vector<const char*> stage3 = { "level3-1.txt", "level3-2.txt" };
+
+	vector<vector<const char*>> levels = { stage1, stage2, stage3 };
+
+	srand((unsigned)time(0));
+	int currentStage = 0, currentLevel = 0;
+	int** level = nullptr;
+	int rows = 0, cols = 0;
+	bool saveLevelLoader = false;
+
+	loadLevelChoice(currentStage, currentLevel, player, saveLevelLoader);
+
+	for (; currentStage < levels.size(); ++currentStage) {
+		const vector<const char*>& stageLevels = levels[currentStage];
+
+		if (!saveLevelLoader) {
+			currentLevel = rand() % stageLevels.size(); // Random level if no saved progress
+		}
+
+		for (; currentLevel < stageLevels.size(); ++currentLevel) {
+			const char* levelFile = stageLevels[currentLevel];
+
+			loadLevelFile(levels, currentStage, currentLevel, level, rows, cols, saveLevelLoader, player);
+
+			key = findIfKeyHasBeenTaken(level, rows, cols);
+			winCondition = false;
+
+			int characterX = characterXCordinates(level, rows, cols);
+			int characterY = characterYCordinates(level, rows, cols);
+			int enemyX = enemyXCordinates(level, rows, cols);
+			int enemyY = enemyYCordinates(level, rows, cols);
+
+			char move;
+			while (true) {
+				clearConsole();
+
+				// Display player stats and level status
+				cout << "Player: " << player.name << "\n";
+				cout << "Coins: " << player.coins << " | Lives: " << player.lifes << "\n";
+				cout << (key ? "Key Found!\n" : "Key Not Found!\n");
+				arrOutput(level, rows, cols);
+
+				if (handleGameOver(player, level, rows, saveLevelLoader)) { return; };
+
+				if (handleEnemyEncounter(characterX, characterY, enemyX, enemyY, player, level, rows));
+
+				if (winCondition) {
+					winCondition = false;
+					freeMatrix(level, rows);
+					level = nullptr;
+					break; // Go to the next level
+				}
+
+				cout << "\nEnter move (w/a/s/d to move, q to quit, p to save): ";
+				cin >> move;
+
+				if (move == 'Q' || move == 'q') {
+					savePlayerDataToFile(player, currentStage, currentLevel);
+					saveLevelState(player, level, rows, cols);
+					freeMatrix(level, rows);
+					cout << "Game saved. Exiting...\n";
+					return;
+				}
+
+				if (move == 'P' || move == 'p') {
+					saveLevelState(player, level, rows, cols);
+					continue;
+				}
+
+				movementInLevel(level, rows, cols, move, characterX, characterY, player);
+				enemyMovementInLevel(level, rows, cols, move, enemyX, enemyY);
+				
+			}
+		}
+
+		// Reset to the first level of the next stage
+		currentLevel = 0;
+		player.coins = 0;
+	}
+
+	cout << "Congratulations, you've completed all stages!\n";
+
+}
