@@ -657,16 +657,20 @@ bool findIfKeyHasBeenTaken(int** matrix, int rows, int cols) {
 	return true;
 }
 
-void loadLevelChoice(int& currentStage, int& currentLevel, Player& player, bool& saveLevelLoader) {
+bool loadLevelChoice(int& currentStage, int& currentLevel, Player& player, bool& saveLevelLoader, const vector<vector<const char*>>& levels) {
+	clearConsole();
 	int choice;
+	cout << "Choose which Stage you would like to play!\n\n";
 	cout << "Choose 1 if you want to load a previous level!\n";
 	cout << "Choose 2 if you want to load save file!\n";
+	cout << "Choose 3 to return to the main menu!\n"; // New option
 	cin >> choice;
 
 	if (choice == 2) {
 		currentStage = player.currentStage;
 		currentLevel = player.currentLevel;
 		saveLevelLoader = true;
+		return false; // Continue playing
 	}
 	else if (choice == 1) {
 		int temp = player.currentStage + 1;
@@ -686,7 +690,20 @@ void loadLevelChoice(int& currentStage, int& currentLevel, Player& player, bool&
 			currentStage = pick - 1;
 			player.lifes = startingLives;
 			player.coins = 0;
+
+			const vector<const char*>& stageLevels = levels[currentStage];
+			currentLevel = rand() % stageLevels.size();
 		}
+		return false; // Continue playing
+	}
+	else if (choice == 3) {
+		return true; // Return to main menu
+	}
+	else {
+		cout << "Invalid choice! Starting from the beginning.\n";
+		currentStage = 0;
+		currentLevel = 0;
+		return false; // Continue playing
 	}
 }
 
