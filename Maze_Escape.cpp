@@ -487,24 +487,23 @@ bool teleportaionToNextPortal(int** level, int rows, int cols, int& targetX, int
 	return found; // Return whether a portal was found
 }
 
-bool collisionChech(int** level, int rows, int cols, int& targetX, int& targetY, Player& player) {
-
+bool collisionChech(int** level, int rows, int cols, int& targetX, int& targetY, Player& player, bool& winCondition, bool& key) {
 	if (targetX < 0 || targetX >= rows || targetY < 0 || targetY >= cols || level[targetX][targetY] == wallCh) {
 		// Border collision or out-of-bounds
 		player.lifes -= 1;
 		return 0;
 	}
-	if (level[targetX][targetY] == coinCH){ // Pick up coin
+	if (level[targetX][targetY] == coinCH) { // Pick up coin
 		player.coins += 1;
 		level[targetX][targetY] = ' ';
 	}
 	else if (level[targetX][targetY] == keyCh) { // Pick up key
-		key = true;
+		key = true; // Update the key variable
 		level[targetX][targetY] = ' ';
 	}
 	else if (level[targetX][targetY] == chestCH) { // Unlock Chest
 		if (key) {
-			winCondition = true;
+			winCondition = true; // Set win condition
 			level[targetX][targetY] = ' ';
 		}
 		else {
@@ -519,7 +518,7 @@ bool collisionChech(int** level, int rows, int cols, int& targetX, int& targetY,
 	return 1; // No collision
 }
 
-void movementInLevel(int** level,int rows,int cols, char move, int& characterX, int& characterY, Player& player) {
+void movementInLevel(int** level, int rows, int cols, char move, int& characterX, int& characterY, Player& player, bool& winCondition, bool& key) {
 	int offsetX = 0, offsetY = 0;
 
 	switch (move) {
@@ -536,9 +535,9 @@ void movementInLevel(int** level,int rows,int cols, char move, int& characterX, 
 	int targetX = characterX + offsetX;
 	int targetY = characterY + offsetY;
 
-	if (collisionChech(level, rows, cols, targetX, targetY, player)) {
+	if (collisionChech(level, rows, cols, targetX, targetY, player, winCondition, key)) {
 		level[characterX][characterY] = ' '; // Clear previous position
-		level[targetX][targetY] = playerCh;       // Move player to new position
+		level[targetX][targetY] = playerCh;  // Move player to new position
 		characterX = targetX;
 		characterY = targetY;
 	}
@@ -857,7 +856,7 @@ void playLevel(Player& player) {
 						continue;
 					}
 
-					movementInLevel(level, rows, cols, move, characterX, characterY, player, winCondition);
+					movementInLevel(level, rows, cols, move, characterX, characterY, player, winCondition,key);
 					enemyMovementInLevel(level, rows, cols, move, enemyX, enemyY);
 				}
 
