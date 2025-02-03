@@ -379,13 +379,27 @@ bool loadSavedLevel(const char* playerName, int& currentStage, int& currentLevel
 
 }
 
-void newPlayerRegister(Player player) {
+bool newPlayerRegister(Player player) {
 	cout << "Player Registration" << endl;
-	
 
 	cout << "Enter player name: ";
 	std::cin.ignore();
 	std::cin.getline(player.name, maxNameSize);
+
+	if (cin.fail()) {
+		cin.clear(); 
+		cin.ignore(10000,'\n'); // clears 10 000 characters or until a new line in case of failier 
+		cout << "Invalid input! Name should be up to 50 characters.\n\n";
+		Sleep(1000);
+		return false;
+	}
+
+	if (!isValidName(player.name)) {
+		cout << "Invalid name! Name should be alphabetic and up to 50 characters.\n\n";
+		Sleep(1000);
+		
+		return false;
+	}
 
 	player.coins = startingCoins;
 	player.lifes = startingLives;
@@ -399,12 +413,13 @@ void newPlayerRegister(Player player) {
 
 	if (fileExists(playerInfo)) {
 		cout << "The Player name " << player.name << " already exists! " << endl;
-		return;
+		return false;
 	}
 
 	savePlayerDataToFile(player,player.currentStage,player.currentLevel);
 	cout << "Welcome to the Dungeons!!!"<<endl;
 	Sleep(1000);
+	return true;
 }
 
 bool logInCredentials(Player& player) {
@@ -822,18 +837,29 @@ int main() {
     Player player;
     int choice;
     bool isLoggedIn = false;
-    
+
+
     do {
         cout << "Press 1 to register as a new player.\n";
         cout << "Press 2 to log in.\n";
-        cout << "Press 3 to exit.\n";  // Added option to exit
+        cout << "Press 3 to exit.\n";  
         cout << "Enter choice: ";
         cin >> choice;
 
+		if (cin.fail()) {
+			cin.clear(); 
+			cin.ignore();
+			cout << "Invalid input! \n";
+			Sleep(1000);
+			clearConsole();
+			continue; // Skip the rest of the loop iteration
+		}
+
         switch (choice) {
         case 1:
-            newPlayerRegister(player);
-            isLoggedIn = true;  // After registering, user is logged in
+			if (newPlayerRegister(player)) {
+				isLoggedIn = true;
+			}
             break;
         case 2:
             if (logInCredentials(player)) {
@@ -846,21 +872,25 @@ int main() {
             break;
         case 3:
             cout << "Goodbye!\n";
-            return 0;  // Exit the program
+            return 0;  
         default:
+
             cout << "Invalid input!\n\n";
+			Sleep(1000);
+			clearConsole();
             break;
         }
 
-        // After successful login or registration, prompt to log out or continue
+        
         if (isLoggedIn) {
-            cout << endl <<"Returnind to Main Menu: ";
-		Sleep(1000);
+            cout << endl <<"Returning to Main Menu: ";
+
+			Sleep(1000);
 			clearConsole();
 			isLoggedIn = false;
         }
 
-    } while (!isLoggedIn);  // Loop will continue if not logged in
+    } while (!isLoggedIn);
     
     return 0;
 }
