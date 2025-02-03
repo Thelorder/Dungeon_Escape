@@ -20,6 +20,13 @@ const int maxNameSize = 51;
 const int startingCoins = 0;
 const int startingLives = 3;
 
+//Color constants
+const int COLOR_RED = 12;
+const int COLOR_GREEN = 10;
+const int COLOR_YELLOW = 14;
+const int COLOR_BLUE = 9;
+const int COLOR_WHITE = 15;
+
 //Ch stands for character
 const char playerCh = '@';
 const char wallCh = '#';
@@ -36,6 +43,12 @@ struct Player {
 	int currentStage = 0;
 	int currentLevel = 0;
 };
+
+// Color function
+void setTextColor(int color) {
+	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+	SetConsoleTextAttribute(hConsole, color);
+}
 
 //Adds the .txt extension for the file;
 void txtAddOn(char* fileName) {
@@ -246,13 +259,40 @@ int** readMatrix(const char* file, int rows, int cols) {
 	return matrix;
 }
 
-void arrOutput(int** matix, int rows, int cols) {
+void arrOutput(int** matrix, int rows, int cols) {
 	for (int i = 0; i < rows;i++) {
 		cout << '\n' << '\n';
 		for (int j = 0; j < cols; j++) {
-			cout << (char)matix[i][j] << '\t';
+
+			char ch = (char)matrix[i][j];
+			if (ch == playerCh) { // Player
+				setTextColor(COLOR_GREEN);
+			}
+			else if (ch == enemyCh) { // Enemy
+				setTextColor(COLOR_RED);
+			}
+			else if (ch == keyCh) { // Key
+				setTextColor(COLOR_YELLOW);
+			}
+			else if (ch == chestCH) { // Chest
+				setTextColor(COLOR_BLUE);
+			}
+			else if (ch == coinCH) { // Coin
+				setTextColor(COLOR_WHITE); // Or any other color you prefer
+			}
+			else if (ch == wallCh) { // Wall
+				setTextColor(COLOR_WHITE); // Or any other color you prefer
+			}
+			else if (ch == portalCh) { // Portal
+				setTextColor(COLOR_WHITE); // Or any other color you prefer
+			}
+			else {
+				setTextColor(COLOR_WHITE); // Default color
+			}
+			cout << ch << '\t';
 		}
 	}
+	setTextColor(COLOR_WHITE);
 }
 
 void freeMatrix(int** matrix, int rows) {
