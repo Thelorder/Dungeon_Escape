@@ -763,7 +763,6 @@ bool handleEnemyEncounter(int characterX, int characterY, int enemyX, int enemyY
 }
 
 void playLevel(Player& player) {
-
 	vector<const char*> stage1 = { "level1-1.txt", "level1-2.txt" };
 	vector<const char*> stage2 = { "level2-1.txt", "level2-2.txt" };
 	vector<const char*> stage3 = { "level3-1.txt", "level3-2.txt" };
@@ -775,79 +774,118 @@ void playLevel(Player& player) {
 	int** level = nullptr;
 	int rows = 0, cols = 0;
 	bool saveLevelLoader = false;
+	bool levelCompleted = false;
+	bool returnToMainMenu = false;
+	bool returnToLevelSelection = false;
+	char move = '\0';
 
-	loadLevelChoice(currentStage, currentLevel, player, saveLevelLoader);
-
-	for (; currentStage < levels.size(); ++currentStage) {
-		const vector<const char*>& stageLevels = levels[currentStage];
-
-		if (!saveLevelLoader) {
-			currentLevel = rand() % stageLevels.size(); // Random level if no saved progress
+	while (true) {
+		returnToMainMenu = loadLevelChoice(currentStage, currentLevel, player, saveLevelLoader, levels);
+		if (returnToMainMenu) {
+			break; // Exit the loop and return to the main menu
 		}
 
-		for (; currentLevel < stageLevels.size(); ++currentLevel) {
-			const char* levelFile = stageLevels[currentLevel];
+		for (; currentStage < levels.size(); ++currentStage) {
+			const vector<const char*>& stageLevels = levels[currentStage];
 
-			loadLevelFile(levels, currentStage, currentLevel, level, rows, cols, saveLevelLoader, player);
-
-			key = findIfKeyHasBeenTaken(level, rows, cols);
-			winCondition = false;
-
-			int characterX = characterXCordinates(level, rows, cols);
-			int characterY = characterYCordinates(level, rows, cols);
-			int enemyX = enemyXCordinates(level, rows, cols);
-			int enemyY = enemyYCordinates(level, rows, cols);
-
-			char move;
-			while (true) {
-				clearConsole();
-
-				// Display player stats and level status
-				cout << "Player: " << player.name << "\n";
-				cout << "Coins: " << player.coins << " | Lives: " << player.lifes << "\n";
-				cout << (key ? "Key Found!\n" : "Key Not Found!\n");
-				arrOutput(level, rows, cols);
-
-				if (handleGameOver(player, level, rows, saveLevelLoader)) { return; };
-
-				if (handleEnemyEncounter(characterX, characterY, enemyX, enemyY, player, level, rows));
-
-				if (winCondition) {
-					winCondition = false;
-					freeMatrix(level, rows);
-					level = nullptr;
-					break; // Go to the next level
-				}
-
-				cout << "\nEnter move (w/a/s/d to move, q to quit, p to save): ";
-				cin >> move;
-
-				if (move == 'Q' || move == 'q') {
-					savePlayerDataToFile(player, currentStage, currentLevel);
-					saveLevelState(player, level, rows, cols);
-					freeMatrix(level, rows);
-					cout << "Game saved. Exiting...\n";
-					return;
-				}
-
-				if (move == 'P' || move == 'p') {
-					saveLevelState(player, level, rows, cols);
-					continue;
-				}
-
-				movementInLevel(level, rows, cols, move, characterX, characterY, player);
-				enemyMovementInLevel(level, rows, cols, move, enemyX, enemyY);
-				
+			if (!saveLevelLoader) {
+				currentLevel = rand() % stageLevels.size(); // Random level if no saved progress
 			}
+
+			levelCompleted = false;
+			returnToLevelSelection = false;
+
+			for (; currentLevel < stageLevels.size(); ++currentLevel) {
+				const char* levelFile = stageLevels[currentLevel];
+
+				loadLevelFile(levels, currentStage, currentLevel, level, rows, cols, saveLevelLoader, player);
+
+				bool key = findIfKeyHasBeenTaken(level, rows, cols);
+				bool winCondition = false;
+
+				int characterX = characterXCordinates(level, rows, cols);
+				int characterY = characterYCordinates(level, rows, cols);
+				int enemyX = enemyXCordinates(level, rows, cols);
+				int enemyY = enemyYCordinates(level, rows, cols);
+
+				while (true) {
+					clearConsole();
+
+					// Display player stats and level status
+					cout << "Player: " << player.name << "\n";
+					cout << "Coins: " << player.coins << " | Lives: " << player.lifes << "\n";
+					cout << (key ? "Key Found!\n" : "Key Not Found!\n");
+
+					randomMessage(player);
+
+					arrOutput(level, rows, cols);
+
+					if (handleGameOver(player, level, rows, saveLevelLoader)) {
+						freeMatrix(level, rows);
+						return;
+					}
+
+					if (handleEnemyEncounter(characterX, characterY, enemyX, enemyY, player, level, rows)) {
+						freeMatrix(level, rows);
+						return;
+					}
+
+					if (winCondition) {
+						winCondition = false;
+						freeMatrix(level, rows);
+						level = nullptr;
+						levelCompleted = true;
+						break; // Go to the next level
+					}
+
+					cout << "\nEnter move (w/a/s/d to move, q to quit, p to save): ";
+					cin >> move;
+
+					if (move == 'Q' || move == 'q') {
+						savePlayerDataToFile(player, currentStage, currentLevel);
+						saveLevelState(player, level, rows, cols);
+						freeMatrix(level, rows);
+						level = nullptr;
+						cout << "Game saved. Returning to level selection...\n";
+						Sleep(1000);
+						returnToLevelSelection = true;
+						break;
+					}
+
+					if (move == 'P' || move == 'p') {
+						saveLevelState(player, level, rows, cols);
+						continue;
+					}
+
+					movementInLevel(level, rows, cols, move, characterX, characterY, player, winCondition);
+					enemyMovementInLevel(level, rows, cols, move, enemyX, enemyY);
+				}
+
+				if (returnToLevelSelection) {
+					break; // Exit the inner for loop and return to loadLevelChoice
+				}
+
+				if (levelCompleted) {
+					break; // Exit the inner for loop after completing one level
+				}
+			}
+
+			if (returnToLevelSelection) {
+				break; // Exit the outer for loop and return to loadLevelChoice
+			}
+
+			// Reset to the first level of the next stage
+			currentLevel = 0;
+			player.coins = 0;
 		}
 
-		// Reset to the first level of the next stage
-		currentLevel = 0;
-		player.coins = 0;
+		if (currentStage >= levels.size()) {
+			cout << "\nCongratulations, you've completed all stages!\n";
+			currentStage--;
+			savePlayerDataToFile(player, currentStage, currentLevel);
+			break; // Exit the loop and return to the main menu
+		}
 	}
-
-	cout << "Congratulations, you've completed all stages!\n";
-
 }
 
 int main() {
