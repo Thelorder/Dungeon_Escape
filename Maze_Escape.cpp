@@ -1,5 +1,22 @@
 //these are the functionalities that allow the program to open a file, within which is contained the level map, count the rows and cols of said map.
 //Then the program proceedes to dynamicly produce a 2-D array which contains the map 
+
+/**
+*
+* Solution to course project # 3
+* Introduction to programming course
+* Faculty of Mathematics and Informatics of Sofia
+University
+* Winter semester 2023/2024
+*
+* @author Ilin Georgiev Ilchev
+* @idnumber 7MI0600541
+* @compiler VC
+*
+* <Thie file contains all of the code that makes said project work>
+*
+*/
+
 #include <iostream>
 #include <Windows.h>
 #include <stdlib.h>
@@ -278,13 +295,13 @@ void arrOutput(int** matrix, int rows, int cols) {
 				setTextColor(COLOR_BLUE);
 			}
 			else if (ch == coinCH) { // Coin
-				setTextColor(COLOR_WHITE); // Or any other color you prefer
+				setTextColor(COLOR_WHITE); 
 			}
 			else if (ch == wallCh) { // Wall
-				setTextColor(COLOR_WHITE); // Or any other color you prefer
+				setTextColor(COLOR_WHITE);
 			}
 			else if (ch == portalCh) { // Portal
-				setTextColor(COLOR_WHITE); // Or any other color you prefer
+				setTextColor(COLOR_WHITE); 
 			}
 			else {
 				setTextColor(COLOR_WHITE); // Default color
@@ -662,7 +679,7 @@ bool loadLevelChoice(int& currentStage, int& currentLevel, Player& player, bool&
 	cout << "Choose which Stage you would like to play!\n\n";
 	cout << "Choose 1 if you want to load a previous level!\n";
 	cout << "Choose 2 if you want to load save file!\n";
-	cout << "Choose 3 to return to the main menu!\n"; // New option
+	cout << "Choose 3 to return to the main menu!\n"; 
 	cin >> choice;
 
 	if (choice == 2) {
@@ -742,7 +759,7 @@ bool handleGameOver(Player& player, int** level, int rows, bool saveLevelLoader)
 		// Free the level matrix
 		if (level != nullptr) {
 			freeMatrix(level, rows);
-			level = nullptr; // Set the pointer to nullptr after freeing
+			level = nullptr; 
 		}
 
 		player.lifes = 3; // Reset lives
@@ -761,7 +778,7 @@ bool handleEnemyEncounter(int characterX, int characterY, int enemyX, int enemyY
 		// Free the level matrix
 		if (level != nullptr) {
 			freeMatrix(level, rows);
-			level = nullptr; // Set the pointer to nullptr after freeing
+			level = nullptr; 
 		}
 
 		player.lifes = 3; // Reset lives
