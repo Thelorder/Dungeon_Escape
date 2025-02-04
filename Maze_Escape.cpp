@@ -737,28 +737,38 @@ void loadLevelFile(const vector<vector<const char*>>& levels, int currentStage, 
 bool handleGameOver(Player& player, int** level, int rows, bool saveLevelLoader) {
 	if (player.lifes <= 0) {
 		cout << "Game Over!\n";
-
 		Sleep(1000);
-		freeMatrix(level, rows);
-		player.lifes = 3;
+
+		// Free the level matrix
+		if (level != nullptr) {
+			freeMatrix(level, rows);
+			level = nullptr; // Set the pointer to nullptr after freeing
+		}
+
+		player.lifes = 3; // Reset lives
 		savePlayerDataToFile(player, player.currentStage, player.currentLevel);
-		return true;
+		return true; 
 	}
-	return false;
+	return false; 
 }
 
 
 bool handleEnemyEncounter(int characterX, int characterY, int enemyX, int enemyY, Player& player, int** level, int rows) {
 	if (enemyY == characterY && enemyX == characterX) {
-		cout << "\nGame Over! The enemy Caught you!!!\n";
-
+		cout << "\nGame Over! The enemy caught you!!!\n";
 		Sleep(1000);
-		freeMatrix(level, rows);
-		player.lifes = 3;
+
+		// Free the level matrix
+		if (level != nullptr) {
+			freeMatrix(level, rows);
+			level = nullptr; // Set the pointer to nullptr after freeing
+		}
+
+		player.lifes = 3; // Reset lives
 		savePlayerDataToFile(player, player.currentStage, player.currentLevel);
-		return true;
+		return true; 
 	}
-	return false;
+	return false; 
 }
 
 void playLevel(Player& player) {
@@ -820,12 +830,10 @@ void playLevel(Player& player) {
 					arrOutput(level, rows, cols);
 
 					if (handleGameOver(player, level, rows, saveLevelLoader)) {
-						freeMatrix(level, rows);
 						return;
 					}
 
 					if (handleEnemyEncounter(characterX, characterY, enemyX, enemyY, player, level, rows)) {
-						freeMatrix(level, rows);
 						return;
 					}
 
